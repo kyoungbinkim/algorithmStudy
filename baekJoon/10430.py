@@ -1,0 +1,18 @@
+a,b,c = map(int, input().split())
+print((a+b)%c)
+print((a+b)%c)
+print((a*b)%c)
+print(((a%c)*(b%c))%c)
+
+print("|\\_/|")
+print('|q p|   /}')
+print('( 0 )"""\\')
+print('|"^"`    |')
+print('||_/=\\\\__|')
+
+print("         ,r'\"7")
+print("r`-_   ,'  ,/")
+print(" \\. \". L_r'")
+print("   `~\\/")
+print("      |")
+print("      |")
