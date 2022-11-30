@@ -29,21 +29,6 @@ class babyShark:
                     return True
         return False
 
-    def Distance(self, p1, p2,visit, l):
-        if p1[0] == p2[0] and p1[1] == p2[1]:
-            return l
-        go = [[-1,0], [0,-1], [0,1],[1,0]]
-        tmp = []
-        for g in go:
-            x,y = g[0] + p1[0] , g[1]+p1[1]
-            if x<0 or x>=self.n or y<0 or y>=self.n:
-                continue
-
-            tmp.append(self.Distance([x,y], p2, l+1))
-        if len(tmp) == 0:
-            return float("inf")
-        return min(tmp)
-
     
     def BFS(self):
         visit = set([])
@@ -63,6 +48,8 @@ class babyShark:
                 else:
                     if candiate[0][2] == tmp[2]:
                         candiate.append(tmp)
+                    elif candiate[0][2] > tmp[2]:
+                        break
                     
             for g in go:
                 x,y = g[0] + tmp[0] , g[1]+tmp[1]
@@ -80,7 +67,7 @@ class babyShark:
     def selectInd(self, candidate):
         # print(candidate)
         if len(candidate) == 0:
-            return [-1,-1]
+            return [-1,-1,0]
         ans = candidate[0]
         for i in range(1, len(candidate)):
             if ans[0] > candidate[i][0]:
@@ -88,57 +75,7 @@ class babyShark:
             elif ans[0] == candidate[i][0] and ans[1] > candidate[i][1]:
                 ans = candidate[i]
         return ans
-            
 
-    def DFS(self, ind, visit, l):
-        go = [[-1,0], [0,-1], [0,1],[1,0]]
-        visit.add(str(ind))
-        ans, Ansdist = None,None
-        tmp = []
-        for g in go:
-            x,y = g[0] + ind[0] , g[1]+ind[1]
-            if x<0 or x>=self.n or y<0 or y>=self.n:
-                continue
-            if self.arr[x][y] > self.size:
-                continue
-            if 0 < self.arr[x][y] < self.size:
-                return [x,y], l+1
-            if ans == None or ans == []:
-                ans, Ansdist = self.DFS([x,y], visit, l+1)
-                
-                print("ans : ", ans)
-            else:
-                tmp, tmpdist  = self.DFS([x,y], visit, l+1)
-                if tmp != [] and tmp != None:
-                    print(ans, tmp, Ansdist, tmpdist)
-                    if tmpdist < Ansdist:
-                        ans, Ansdist= tmp, tmpdist
-                    elif tmpdist == Ansdist:
-                        if tmp[0] < ans[0]:
-                            ans, Ansdist= tmp, tmpdist
-                        elif tmp[0] == ans[0] and tmp[1] < ans[1]:
-                            ans, Ansdist= tmp, tmpdist
-
-        return ans, Ansdist
-
-
-    def closestFish(self) -> list:
-        closeInd = [self.n+1, self.n+1]
-        closeDistance = float("inf")
-        for i in range(self.n):
-            for j in range(self.n):
-                if (0< self.arr[i][j] < self.size):
-                    # if self.loc == [0,0]:
-                    #     print(abs(i-self.loc[0]) + abs(j-self.loc[1]), i ,j, closeDistance, closeInd)
-                    dist = abs(i-self.loc[0]) + abs(j-self.loc[1])
-                    if dist < closeDistance:
-                        closeInd = [i,j]
-                        closeDistance = dist
-                    elif dist == closeDistance and i<= closeInd[0] and j<closeInd[1]:
-                        closeInd = [i,j]
-                        closeDistance = dist
-        return closeInd
-    
     def statusPrint(self):
         for a in self.arr:
             print(a)
@@ -150,6 +87,8 @@ class babyShark:
         # self.statusPrint()
         while self.canEat():
             targetLoc = self.BFS()
+            if targetLoc[0] == -1:
+                break
             myLoc = self.loc
             # print(myLoc, targetLoc)
             self.clock += targetLoc[2]
@@ -161,11 +100,7 @@ class babyShark:
             self.arr[myLoc[0]][myLoc[1]] = 0
             self.arr[targetLoc[0]][targetLoc[1]] = 9
 
-            self.loc = targetLoc[:2]
-
-            # self.statusPrint()
-            if self.size > 10:
-                break
+            self.loc = targetLoc[:2]            
             
         return self.clock
 
@@ -179,9 +114,3 @@ if __name__ == "__main__":
         
     bs = babyShark(n,arr)
     print(bs.run())
-            
-            
-
-
-        
-        
