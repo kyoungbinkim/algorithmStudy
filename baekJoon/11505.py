@@ -2,6 +2,7 @@
 from sys import stdin, setrecursionlimit
 from math import ceil, log2
 
+
 setrecursionlimit(10000)
 p = 1000000007
 n,m,k = map(int, stdin.readline().split())
