@@ -37,3 +37,14 @@ int main(){
 
     return 0;
 }
+
+
+int arr[] = {0, 1, 3, 5, 7};
+
+int& f(int n){
+    return arr[n];
+}
+
+1) f(0) = 100;
+2) f(0) = 1 + f(1) + f(2);
+3) int v = f(2); v++;

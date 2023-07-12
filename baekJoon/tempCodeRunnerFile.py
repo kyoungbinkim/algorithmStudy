@@ -1,2 +1,2 @@
- ans:
-    print(tmp)
+== 0:
+            #     return False
