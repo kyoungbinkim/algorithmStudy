@@ -50,16 +50,9 @@ class GoodByeHeater:
 
                     self.heat((dr,dc), i)
 
-                    # for b in self.board:
-                    #     print(b)
-                    # print()
             self.updateBoard()
-            # for b in self.board:
-            #     print(b)
-            # print()
+
             self.downBoarder()
-            # for b in self.board:
-            #     print(b)
 
             cnt = 0
             for (r,c) in self.invest:
@@ -69,8 +62,6 @@ class GoodByeHeater:
                 print(self.ans)
                 return
         print(101)
-
-
 
     def makeMove(self):
         for i in range(4):
@@ -97,7 +88,6 @@ class GoodByeHeater:
 
             r, c = pos
             dr, dc = pos[0] + moved[0][0], pos[1] + moved[0][1]
-            # print("first Move : ", (r,c), (dr,dc), power)
             if dr < 0 or dc < 0 or dr >= self.n or dc >= self.m:
                 continue
 
@@ -145,7 +135,6 @@ class GoodByeHeater:
 
                     diff = (diff//4 + 1) if diff < 0 and diff % 4 else (diff // 4)
 
-                    # print((i,j), right, diff)
                     newBoard[i][j] -= diff
                     newBoard[right[0]][right[1]] += diff
 
@@ -153,7 +142,6 @@ class GoodByeHeater:
                     diff = self.board[i][j] - self.board[down[0]][down[1]]
 
                     diff = (diff//4 + 1) if diff < 0 and diff % 4 else (diff // 4)
-                    # print((i,j), down, diff)
                     newBoard[i][j] -= diff
                     newBoard[down[0]][down[1]] += diff
 
