@@ -13,6 +13,8 @@ for _ in range(t):
         if th > scores[i][1]:
             th = scores[i][1]
             cnt += 1
+        if th == 1:
+            break
     ans.append(cnt)
 for a in ans:
     print(a)
