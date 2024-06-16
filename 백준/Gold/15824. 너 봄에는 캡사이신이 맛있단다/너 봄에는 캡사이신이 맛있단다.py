@@ -1,18 +1,13 @@
 from sys import stdin
+from itertools import combinations
 
-p = 1000000007
+p = 1_000_000_007
 n = int(stdin.readline())
-
+(nums := list(map(int, stdin.readline().split()))).sort()
+# print(*nums)
 ans = 0
-twosqare = [1]
 for i in range(n):
-    twosqare.append(twosqare[i] * 2 % p)
-arr = list(map(int, stdin.readline().split()))
-arr.sort()
-# print(arr, twosqare)
-
-for i in range(n-1):
-    for j in range(i+1, n):
-        # ans += ((arr[j]- arr[i]) * twosqare[j-i-1]) % p
-        ans = (ans + (arr[j]- arr[i]) * twosqare[j-i-1] % p) % p
+    ans += p - (nums[i] * (pow(2, n-i-1,p) - 1)) % p
+    ans += (nums[i] * (pow(2, i, p) - 1)) % p
+    ans %= p
 print(ans % p)
