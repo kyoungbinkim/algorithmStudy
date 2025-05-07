@@ -29,6 +29,7 @@ for i in range(1, n-1):
     
     if accArea == halfArea:
         ans = points[i]
+        break
     elif accArea > halfArea:
         diffArea = accArea - halfArea
         
