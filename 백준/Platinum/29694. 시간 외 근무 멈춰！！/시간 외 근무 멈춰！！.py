@@ -1,95 +1,91 @@
 from sys import stdin
+DAY, WKDN, WORK_DAY, OVR_DAY, OVR_WKND = range(5)
 
-# import random
+n, a,b, m = map(int, stdin.readline().split())
 
-# n = random.randint(5, 20)
-# # n = 1
-# a = random.randint(0, 10)
-# # b = random.randint(a, 11)
-# b=a
-# m = random.randint(10, 120)
+s = sorted([list(map(int ,stdin.readline().split())) for _ in range(n)])
 
-# s = []
-# for _ in range(n):
-#     __s = random.randint(1, 100)
-#     s.append([__s, random.randint(1, 1+__s//4)])
-# s = sorted(s)
-# print(s, f"a:{a}, b:{b}, m:{m}")
+logs =[0 for _ in range(5)]
+total_work = 0
 
-n, a, b, m = map(int, stdin.readline().split())
+for i,(d,t) in enumerate(s):
+    total_work += t
 
-s = sorted([list(map(int, stdin.readline().split())) for _ in range(n)])
-
-day, wknd, work, ovr = 0, 0, 0, 0
-
-for i, (d,t) in enumerate(s):
-    day = d//7 * 5 +  (5 if d%7 == 6 else d%7) 
-    wknd = d//7 * 2  + (d%7 // 6) 
-    # print()
-    # print(d)
-    # print(day, wknd)
-    # print(f"work: {work}, ovr:{ovr}, total : {sum([tmp[1] for tmp in s[:i+1]])}")
-    work += t
+    diff_day = d//7 * 5 + (5 if d%7 ==6 else d%7 ) - logs[DAY]
+    diff_wknd= d - diff_day - logs[DAY] - logs[WKDN] 
+    logs[DAY] +=  diff_day
+    logs[WKDN] = d - logs[DAY]
     
-    if work > day:
-        ovr += work-day
-        work = day
+    if t and logs[WORK_DAY] < logs[DAY]:
+        tmp =  min(logs[DAY] - logs[WORK_DAY], t)
+        logs[WORK_DAY] += tmp
+        
+        t -= tmp
     
-    if ovr > d:
+    if t and logs[DAY] > logs[OVR_DAY]:
+        tmp = min(logs[DAY] - logs[OVR_DAY], t)
+        logs[OVR_DAY] += tmp
+        
+        t -= tmp
+    
+    # print(f'd: {d}, t:{t}, total_work : {total_work}')
+    # print(t)
+    
+    if t and logs[WKDN] > logs[OVR_WKND]:
+        tmp = min(logs[WKDN] - logs[OVR_WKND], t)
+        logs[OVR_WKND] += tmp
+        
+        t -= tmp
+    
+    # print(f"""
+    #       diff_day : {diff_day}
+    #       diff_wknd : {diff_wknd}
+    #       logs[DAY]  : {logs[DAY] }
+    #       logs[WKDN] : {logs[WKDN]}
+          
+    #       logs[WORK_DAY] : {logs[WORK_DAY]}
+          
+    #       logs[OVR_DAY] : {logs[OVR_DAY]}
+    #       logs[OVR_WKND] : {logs[OVR_WKND]}
+    #       total_work : {total_work}
+    #       """)
+    
+    if t > 0:
         print(-1)
         exit()
 
 ans = -1
-if a==0 and b ==0:
-    if m>0:
-        pass  
-    elif ovr > s[-1][0]:
-        pass
-    else:
-        ans = max(ovr - day, 0)
 
-elif a==0:
-    if m % b:
+if logs[OVR_DAY] + logs[OVR_WKND] > logs[DAY] + logs[WKDN]:
+    pass
+
+elif a==b==0:
+    if m:
         pass
-    elif m//b <= wknd:
-        ans = m//b
+    
+    else:
+        ans = logs[OVR_WKND]
+
+elif a == 0:
+    if m%b == 0 and logs[WKDN] >=  m//b >= logs[OVR_WKND]:
+        ans = m // b
 
 elif b == 0:
-    if m % a == 0 and ovr : 
-        if m//a <= day  and  ovr - m // a <= wknd:
-            ans = max(ovr - m // a, 0)
+    if  m%a == 0 and  m//a <=logs[DAY]:
+        ans = logs[OVR_WKND]  + logs[OVR_DAY] - m//a
+
 else:
-    for _y in range(wknd+1): 
-        ax = m - _y * b
+    for _y in range(logs[OVR_WKND], logs[WKDN]+1):
+        diff_ovr_wknd = _y - logs[OVR_WKND]
+        ovr_day = m - _y * b
         
-        if ax >= 0 and ax % a == 0 and ax // a <= day and \
-            s[-1][0] >= ax // a + _y >= ovr:
-            # print(f"a : {(m - _y * b )//a}")
-            ans = _y
-            break
-        # for _x in range(day+1):
-        #     if _x+_y > work+day:
-        #         break
-        #     if _x > day:
-        #         break
-        #     print(f"x:{_x} a:{a},  y:{_y} b:{b} m:{m}")
+        
+        if ovr_day >= 0 and ovr_day % a == 0 and \
+            logs[DAY] >= ovr_day // a >= logs[OVR_DAY] - diff_ovr_wknd:
+                ans = _y
+                break
             
-            
-        #     if (m - _y * b ) % a == 0 and (m - _y * b ) // a <= day:
-        #         ans = _y
-        #         break
-            
-        #     # if _x * a + _y * b == m:
-        #     #     ans = _y
-        #     #     break
-        # if ans>= 0:
-        #     break
-
-print(ans)
-
-# print(f"( m - b * wknd ) / a : {( m - b * wknd ) / a}")
-# print(f"x")
-# print(f"day : {day}")
+print(ans)     
 
 '''
 
@@ -103,4 +99,6 @@ b * wknd >= (m-ax)
 ax >=m - b * wknd
 x >= ( m - b * wknd ) / a
 
-'''
+''' 
+    
+
